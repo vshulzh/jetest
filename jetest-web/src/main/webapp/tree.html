@@ -7,14 +7,53 @@
     <script>
         function drawTree() {
             $.getJSON("jetree", function(result) {
-                console.log(result);
+               document.body.appendChild(drawTreeNode(result));
             }).fail(function() {
+                alert("Didn't get tree!:(");
                 console.log("JSON request failed");
             });
         }
-        function drawNode(node) {
-        <!-- todo -->
+
+        function drawTreeNode(node) {
+
+            var liNode = document.createElement('li');
+
+            liNode.id = node.id;
+            var img = document.createElement('img');
+            img.src = node.iconUrl;
+            img.onclick = function() {
+                console.log(liNode.getElementsByTagName('ul'));
+                // todo: check element existence
+                if (typeof(liNode.getElementsByTagName('ul')[0]) != 'undefined') {
+                    $.getJSON("jetree", {nodeId:node.id, collapse:""}, function(result) {
+                        liNode.removeChild(liNode.getElementsByTagName('ul')[0]);
+                    });
+                } else {
+                    $.getJSON("jetree", {nodeId:node.id}, function(children) {
+                        drawChildren(liNode, children);
+                    });
+                }
+            };
+
+            liNode.appendChild(img);
+            liNode.appendChild(document.createTextNode(node.title));
+
+            if (typeof(node.children) != 'undefined') {
+                drawChildren(liNode, node.children);
+            }
+
+            return liNode;
         }
+
+        function drawChildren(liNode, children) {
+            var innerContainer = document.createElement('ul');
+            for (var k in children) {
+                var childLiNode = drawTreeNode(children[k], innerContainer);
+                innerContainer.appendChild(childLiNode);
+            }
+            liNode.appendChild(innerContainer);
+        }
+
     </script>
 </head>
 <body onload="drawTree()">

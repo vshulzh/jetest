@@ -29,8 +29,16 @@ public class JsonFsJeNodeConverter implements JeNodeConverter {
         this.folderResourceName = folderResourceName;
     }
 
+    public String getFolderResourceName() {
+        return folderResourceName;
+    }
+
     public void setUnknownResourceName(String unknownResourceName) {
         this.unknownResourceName = unknownResourceName;
+    }
+
+    public String getUnknownResourceName() {
+        return unknownResourceName;
     }
 
     @Override
